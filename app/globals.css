@@ -33,3 +33,38 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-mono), ui-monospace, monospace;
 }
+
+/* Terminal mobile responsiveness */
+.terminal-output {
+  padding: 12px;
+  padding-bottom: 8px;
+}
+
+.terminal-output-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.terminal-input {
+  font-size: 16px; /* Prevents iOS auto-zoom on focus */
+}
+
+.terminal-input-line {
+  padding: 8px 12px 12px;
+}
+
+@media (min-width: 768px) {
+  .terminal-output {
+    padding: 16px;
+    padding-bottom: 8px;
+  }
+
+  .terminal-input {
+    font-size: inherit;
+  }
+
+  .terminal-input-line {
+    padding: 8px 16px 16px;
+  }
+}

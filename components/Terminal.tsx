@@ -155,23 +155,22 @@ export default function Terminal() {
     >
       <div
         ref={outputRef}
-        className="output-area"
+        className="output-area terminal-output"
         style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '16px',
-          paddingBottom: '8px',
+          overflowX: 'hidden',
         }}
       >
         {history.map((entry, index) => (
           <div key={index} style={{ marginBottom: '4px' }}>
             {entry.type === 'command' ? (
-              <div className="command-line" style={{ display: 'flex', gap: '8px' }}>
+              <div className="command-line" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <Prompt />
                 <span>{entry.content}</span>
               </div>
             ) : (
-              <div className="output" style={{ whiteSpace: 'pre-wrap' }}>
+              <div className="output terminal-output-text" style={{ whiteSpace: 'pre-wrap' }}>
                 {parseContent(entry.content)}
               </div>
             )}
@@ -179,7 +178,7 @@ export default function Terminal() {
         ))}
         {isAnimating && displayedText && (
           <div style={{ marginBottom: '4px' }}>
-            <div className="output" style={{ whiteSpace: 'pre-wrap' }}>
+            <div className="output terminal-output-text" style={{ whiteSpace: 'pre-wrap' }}>
               {parseContent(displayedText)}
             </div>
           </div>
@@ -187,12 +186,11 @@ export default function Terminal() {
       </div>
 
       <div
-        className="input-line"
+        className="input-line terminal-input-line"
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '8px 16px 16px',
           flexShrink: 0,
         }}
       >
@@ -208,6 +206,7 @@ export default function Terminal() {
           spellCheck={false}
           autoComplete="off"
           autoCapitalize="off"
+          className="terminal-input"
           style={{
             flex: 1,
             background: 'transparent',
@@ -215,7 +214,6 @@ export default function Terminal() {
             outline: 'none',
             color: 'var(--dracula-foreground)',
             fontFamily: 'inherit',
-            fontSize: 'inherit',
             caretColor: 'var(--dracula-green)',
             padding: 0,
             opacity: isAnimating ? 0.5 : 1,
