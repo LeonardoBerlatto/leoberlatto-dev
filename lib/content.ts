@@ -1,12 +1,13 @@
 export const CONTENT = {
-  banner: `
-    {{cyan:╔═══════════════════════════════════════╗}}
-    {{cyan:║}}  {{yellow:█████████████████████████████████}}  {{cyan:║}}
-    {{cyan:║}}  {{yellow:█}}  {{pink:Leonardo Berlatto}}  {{yellow:█}}  {{cyan:║}}
-    {{cyan:║}}  {{yellow:█████████████████████████████████}}  {{cyan:║}}
-    {{cyan:╚═══════════════════════════════════════╝}}
-    {{green:Full-stack engineer building beautiful, performant web experiences}}
-  `,
+  banner: `{{cyan:  _    ___ ___  _  _   _   ___ ___   ___}}
+{{cyan: | |  | __/ _ \\| \\| | /_\\ | _ \\   \\ / _ \\}}
+{{cyan: | |__| _| (_) | .\` |/ _ \\|   / |) | (_) |}}
+{{cyan: |____|___\\___/|_|\\_/_/ \\_\\_|_\\___/ \\___/}}
+{{pink:  ___  ___ ___ _      _ _____ _____ ___}}
+{{pink: | _ )| __| _ \\ |    /_\\_   _|_   _/ _ \\}}
+{{pink: | _ \\| _||   / |__ / _ \\| |   | || (_) |}}
+{{pink: |___/|___|_|_\\____/_/ \\_\\_|   |_| \\___/}}
+{{green:software engineer}} {{yellow:·}} {{yellow:6+ years of experience}}`,
 
   about: `{{pink:Hey there!}} I'm Leonardo Berlatto, a {{yellow:full-stack engineer}} passionate about creating elegant solutions to complex problems.
 
@@ -46,28 +47,9 @@ Currently exploring {{cyan:AI-powered applications}} and {{green:modern web arch
 {{pink:E-commerce Platform}} - {{cyan:[github.com/leoberlatto/shop](https://github.com/leoberlatto/shop)}}
   Full-stack {{yellow:e-commerce}} solution with {{green:payment integration}}, {{cyan:inventory management}}, and {{pink:admin dashboard}}. Built with {{orange:Next.js}} and {{purple:PostgreSQL}}.`,
 
-  resume: `{{yellow:Experience}}
+    resume: `{{yellow:Resume: 📄}} {{cyan:[resume_w_phone.pdf](https://drive.google.com/file/d/1ShJlPGo4FJGdbWE0bSKoY8qywgmczb9P/view?usp=sharing)}} {{yellow:— or type gui for the desktop.}}
 
-{{pink:Senior Frontend Engineer}} @ {{cyan:TechCorp}} (2022 - Present)
-  • Led {{green:React}} migration for {{yellow:3 major products}}, improving performance by {{cyan:40%}}
-  • Mentored {{orange:5 junior developers}} and established {{pink:code review standards}}
-  • Architected {{yellow:design system}} used across {{cyan:10+ applications}}
-
-{{pink:Full-Stack Engineer}} @ {{cyan:StartupXYZ}} (2020 - 2022)
-  • Built {{green:scalable APIs}} serving {{yellow:1M+ requests/day}} with {{cyan:Node.js}}
-  • Implemented {{pink:real-time features}} using {{orange:WebSockets}} and {{purple:Redis}}
-  • Reduced {{yellow:bundle size}} by {{cyan:60%}} through code splitting and optimization
-
-{{pink:Frontend Developer}} @ {{cyan:DesignStudio}} (2019 - 2020)
-  • Created {{green:responsive}} and {{yellow:accessible}} web interfaces
-  • Collaborated with {{cyan:designers}} to implement {{pink:pixel-perfect}} designs
-  • Improved {{orange:Core Web Vitals}} across {{purple:all projects}}
-
-{{yellow:Education}}
-
-{{pink:Bachelor of Science}} in {{cyan:Computer Science}}
-  {{green:University of Technology}} (2019)
-  {{yellow:GPA: 3.8/4.0}} | {{orange:Dean's List}} | {{pink:Scholarship recipient}}`,
+{{green:Check my projects and stack too!}}`,
 
   social: `{{yellow:Connect with me}}
 
@@ -82,17 +64,6 @@ Currently exploring {{cyan:AI-powered applications}} and {{green:modern web arch
 
 {{cyan:Dev.to}} - {{green:[dev.to/leoberlatto](https://dev.to/leoberlatto)}}
   {{yellow:20+ articles}} on {{pink:React}}, {{cyan:performance}}, and {{orange:best practices}}`,
-
-  email: `{{yellow:Get in touch}}
-
-{{pink:Email}} - {{cyan:hello@leoberlatto.dev}}
-  {{green:Response time: 24 hours}}
-
-{{pink:Schedule a call}} - {{cyan:[calendly.com/leoberlatto](https://calendly.com/leoberlatto)}}
-  {{yellow:Available for}} {{orange:consulting}}, {{pink:freelance projects}}, and {{cyan:collaborations}}
-
-{{pink:Discord}} - {{green:leoberlatto#1234}}
-  {{yellow:Active in}} {{cyan:web dev communities}}, happy to help with {{pink:technical questions}}`,
 
   blog: `{{yellow:Latest Articles}}
 
@@ -109,4 +80,27 @@ Currently exploring {{cyan:AI-powered applications}} and {{green:modern web arch
   Comparison of {{cyan:REST vs GraphQL}}, {{pink:best practices}}, and {{yellow:real-world examples}} from production systems.
 
 {{pink:View all articles}} - {{cyan:[leoberlatto.dev/blog](https://leoberlatto.dev/blog)}}`,
+
+  julia: `{{pink:     _ _   _ _     _    _}}
+{{pink:    | | | | | |   | |  / \\}}
+{{pink:    | | | | | |   | | / _ \\}}
+{{pink: _  | | | | | |   | |/ ___ \\}}
+{{pink:| |_| | |_| | |__ | / /   \\ \\}}
+{{pink: \\___/ \\___/|____|_/_/     \\_\\}}
+
+{{red:    ___     ___}}
+{{red:   /   \\   /   \\}}
+{{red:  |     \\ /     |}}
+{{red:   \\           /}}
+{{red:    \\         /}}
+{{red:     \\       /}}
+{{red:      \\     /}}
+{{red:       \\   /}}
+{{red:        \\ /}}
+{{red:         V}}
+
+{{pink: _____ ___    _   __  __  ___}}
+{{pink:|_   _| __|  /_\\ |  \\/  |/ _ \\}}
+{{pink:  | | | _|  / _ \\| |\\/| | (_) |}}
+{{pink:  |_| |___|/_/ \\_\\_|  |_|\\___/}}`,
 };

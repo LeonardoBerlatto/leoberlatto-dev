@@ -8,7 +8,8 @@ export type OutputEntry = {
 
 export type Command = {
   description: string;
-  handler: (args?: string, history?: string[]) => OutputEntry;
+  hidden?: boolean;
+  handler: (args?: string) => OutputEntry;
 };
 
 export const COMMANDS: Record<string, Command> = {
@@ -42,12 +43,6 @@ export const COMMANDS: Record<string, Command> = {
       content: CONTENT.social,
     }),
   },
-  email: {
-    description: 'Get in touch',
-    handler: () => ({
-      content: CONTENT.email,
-    }),
-  },
   blog: {
     description: 'View my blog articles',
     handler: () => ({
@@ -58,6 +53,7 @@ export const COMMANDS: Record<string, Command> = {
     description: 'List all available commands',
     handler: () => {
       const commandList = Object.entries(COMMANDS)
+        .filter(([, cmd]) => !cmd.hidden)
         .map(([name, cmd]) => `{{green:${name}}} - ${cmd.description}`)
         .join('\n');
       return {
@@ -72,6 +68,14 @@ export const COMMANDS: Record<string, Command> = {
       content: '',
     }),
   },
+  julia: {
+    description: '',
+    hidden: true,
+    handler: () => ({
+      content: CONTENT.julia,
+      instant: true,
+    }),
+  },
   banner: {
     description: 'Display the banner',
     handler: () => ({
@@ -79,34 +83,13 @@ export const COMMANDS: Record<string, Command> = {
       instant: true,
     }),
   },
-  history: {
-    description: 'View command history',
-    handler: (args?: string, history?: string[]) => {
-      if (!history || history.length === 0) {
-        return {
-          content: 'No command history',
-          instant: true,
-        };
-      }
-      const historyList = history
-        .map((cmd, index) => `${index + 1}. ${cmd}`)
-        .join('\n');
-      return {
-        content: historyList,
-        instant: true,
-      };
-    },
-  },
 };
 
-export function executeCommand(
-  input: string,
-  history?: string[]
-): OutputEntry {
+export function executeCommand(input: string): OutputEntry {
   const commandName = input.trim().toLowerCase();
 
   if (COMMANDS[commandName]) {
-    return COMMANDS[commandName].handler(input, history);
+    return COMMANDS[commandName].handler(input);
   }
 
   return {

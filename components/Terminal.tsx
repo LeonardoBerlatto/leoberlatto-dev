@@ -6,9 +6,9 @@ import { executeCommand, COMMANDS } from '@/lib/commands';
 import { parseContent } from '@/lib/parse-content';
 import { CONTENT } from '@/lib/content';
 
-const TYPING_SPEED_MS = 20;
+const TYPING_SPEED_MS = 12;
 
-const INSTANT_COMMANDS = new Set(['banner', 'clear', 'history', 'help']);
+const INSTANT_COMMANDS = new Set(['banner', 'clear']);
 
 type HistoryEntry = {
   type: 'command' | 'output';
@@ -105,7 +105,7 @@ export default function Terminal() {
     ];
 
     const newCommandHistory = [...commandHistory, trimmed];
-    const result = executeCommand(trimmed, newCommandHistory);
+    const result = executeCommand(trimmed);
     const commandName = trimmed.toLowerCase();
     const shouldBeInstant = result.instant || INSTANT_COMMANDS.has(commandName);
 
