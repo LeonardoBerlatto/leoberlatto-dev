@@ -1,17 +1,18 @@
 {{yellow:Frontend}}
   • {{cyan:React}} / {{cyan:Next.js}} - Modern UI frameworks
-  • {{green:TypeScript}} - Type-safe development
-  • {{pink:Tailwind CSS}} / {{orange:CSS-in-JS}} - Styling solutions
-  • {{purple:Framer Motion}} / {{cyan:GSAP}} - Animation libraries
+  • {{cyan:TypeScript}}/{{yellow:JavaScript}} - Type-safe development
+  • {{pink:Tailwind CSS}} - Styling solutions
 
-{{yellow:Backend}}
-  • {{green:Node.js}} / {{cyan:Express}} - Server runtime & framework
-  • {{pink:PostgreSQL}} / {{orange:MongoDB}} - Database systems
-  • {{purple:GraphQL}} / {{cyan:REST APIs}} - API design
-  • {{yellow:Docker}} / {{green:Kubernetes}} - Containerization
+{{cyan:Backend}}
+  • {{cyan:Go}}
+  • {{orange:Java}}
+  • {{green:Node.js}}
+  • {{yellow:Python}}
+  • {{cyan:PostgreSQL}}/{{green:MongoDB}}/{{purple:Redis}} - Databases
+  • {{cyan:Docker}}
+  • {{purple:Kubernetes}}
 
-{{yellow:Tools & DevOps}}
-  • {{cyan:Git}} / {{green:GitHub}} - Version control
-  • {{pink:CI/CD}} - GitHub Actions, Vercel
+{{orange:Tools & DevOps}}
   • {{orange:AWS}} / {{purple:Vercel}} - Cloud platforms
+  • {{purple:Terraform}} - Infrastructure as Code
   • {{yellow:Jest}} / {{cyan:Playwright}} - Testing frameworks

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import * as Tone from 'tone';
 import { executeCommand, COMMANDS } from '@/lib/commands';
 import { parseContent } from '@/lib/parse-content';
@@ -23,6 +23,7 @@ export default function Terminal() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const [toneStarted, setToneStarted] = useState(false);
+  const [cursorPos, setCursorPos] = useState(0);
   const animatingTextRef = useRef('');
   const inputRef = useRef<HTMLInputElement>(null);
   const outputRef = useRef<HTMLDivElement>(null);
@@ -66,8 +67,10 @@ export default function Terminal() {
   }, [history, displayedText]);
 
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    if (!isAnimating) {
+      inputRef.current?.focus();
+    }
+  }, [isAnimating]);
 
   useEffect(() => {
     if (!isAnimating) return;
@@ -94,39 +97,43 @@ export default function Terminal() {
     return () => clearInterval(interval);
   }, [isAnimating, playChime]);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     initTone();
     const trimmed = input.trim();
     if (!trimmed || isAnimating) return;
 
-    const newHistory: HistoryEntry[] = [
-      ...history,
-      { type: 'command', content: trimmed },
-    ];
+    const commandEntry: HistoryEntry = { type: 'command', content: trimmed };
 
-    const newCommandHistory = [...commandHistory, trimmed];
-    const result = executeCommand(trimmed);
+    setHistory((prev) => [...prev, commandEntry]);
+    setCommandHistory((prev) => {
+      const next = [...prev, trimmed];
+      setHistoryIndex(next.length);
+      return next;
+    });
+    setInput('');
+
+    const result = await executeCommand(trimmed);
     const commandName = trimmed.toLowerCase();
     const shouldBeInstant = result.instant || INSTANT_COMMANDS.has(commandName);
 
     if (result.clear) {
       setHistory([]);
     } else if (shouldBeInstant) {
-      setHistory([...newHistory, { type: 'output', content: result.content }]);
+      setHistory((prev) => [...prev, { type: 'output', content: result.content }]);
       playChime();
     } else {
-      setHistory(newHistory);
       animatingTextRef.current = result.content;
       setDisplayedText('');
       setIsAnimating(true);
     }
 
-    setCommandHistory(newCommandHistory);
-    setInput('');
-    setHistoryIndex(newCommandHistory.length);
+    if (result.openUrl) {
+      const { url, delay = 0 } = result.openUrl;
+      setTimeout(() => window.open(url, '_blank'), delay);
+    }
 
     setTimeout(() => inputRef.current?.focus(), 0);
-  }, [input, history, commandHistory, isAnimating, initTone, playChime]);
+  }, [input, isAnimating, initTone, playChime]);
 
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
      if (e.key === 'Enter') {
@@ -167,10 +174,22 @@ export default function Terminal() {
      }
    };
 
+  const updateCursorPos = useCallback(() => {
+    setCursorPos(inputRef.current?.selectionStart ?? input.length);
+  }, [input.length]);
+
   const handleContainerClick = () => {
     initTone();
     inputRef.current?.focus();
+    setTimeout(updateCursorPos, 0);
   };
+
+  const inputColor = useMemo(() =>
+    input.trim() && COMMANDS[input.trim().toLowerCase()]
+      ? 'var(--dracula-green)'
+      : 'var(--dracula-foreground)',
+    [input]
+  );
 
   return (
     <div
@@ -198,7 +217,11 @@ export default function Terminal() {
             {entry.type === 'command' ? (
               <div className="command-line" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <Prompt />
-                <span>{entry.content}</span>
+                <span style={{
+                  color: COMMANDS[entry.content.trim().toLowerCase()]
+                    ? 'var(--dracula-green)'
+                    : undefined
+                }}>{entry.content}</span>
               </div>
             ) : (
               <div className="output terminal-output-text" style={{ whiteSpace: 'pre-wrap' }}>
@@ -226,30 +249,39 @@ export default function Terminal() {
         }}
       >
         <Prompt />
-        <input
-          ref={inputRef}
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={isAnimating}
-          autoFocus
-          spellCheck={false}
-          autoComplete="off"
-          autoCapitalize="off"
-          className="terminal-input"
-          style={{
-            flex: 1,
-            background: 'transparent',
-            border: 'none',
-            outline: 'none',
-            color: 'var(--dracula-foreground)',
-            fontFamily: 'inherit',
-            caretColor: 'var(--dracula-green)',
-            padding: 0,
-            opacity: isAnimating ? 0.5 : 1,
-          }}
-        />
+        <div style={{ flex: 1, position: 'relative', opacity: isAnimating ? 0.5 : 1 }}>
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => { setInput(e.target.value); setTimeout(updateCursorPos, 0); }}
+            onKeyDown={(e) => { handleKeyDown(e); setTimeout(updateCursorPos, 0); }}
+            onSelect={updateCursorPos}
+            disabled={isAnimating}
+            autoFocus
+            spellCheck={false}
+            autoComplete="off"
+            autoCapitalize="off"
+            className="terminal-input"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              color: 'transparent',
+              caretColor: 'transparent',
+              fontFamily: 'inherit',
+              padding: 0,
+              width: '100%',
+            }}
+          />
+          <span style={{ color: inputColor, fontFamily: 'inherit', whiteSpace: 'pre' }} aria-hidden>
+            {input.slice(0, cursorPos)}
+            <span className="block-cursor">{input[cursorPos] ?? ' '}</span>
+            {input.slice(cursorPos + 1)}
+          </span>
+        </div>
       </div>
     </div>
   );

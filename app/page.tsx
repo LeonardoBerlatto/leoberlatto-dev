@@ -1,4 +1,10 @@
 import Terminal from '@/components/Terminal';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Leonardo Berlatto - Portfolio',
+  description: 'Leonardo Berlatto\'s portfolio site',
+};
 
 export default function Home() {
   return (

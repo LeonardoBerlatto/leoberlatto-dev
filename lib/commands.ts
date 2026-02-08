@@ -4,12 +4,16 @@ export type OutputEntry = {
   content: string;
   instant?: boolean;
   clear?: boolean;
+  openUrl?: {
+    url: string;
+    delay?: number;
+  };
 };
 
 export type Command = {
   description: string;
   hidden?: boolean;
-  handler: (args?: string) => OutputEntry;
+  handler: (args?: string) => OutputEntry | Promise<OutputEntry>;
 };
 
 export const COMMANDS: Record<string, Command> = {
@@ -44,9 +48,13 @@ export const COMMANDS: Record<string, Command> = {
     }),
   },
   blog: {
-    description: 'View my blog articles',
+    description: 'Open my blog on Substack',
     handler: () => ({
-      content: CONTENT.blog,
+      content: '{{green:Opening Substack in a new tab...}}',
+      openUrl: {
+        url: 'https://substack.com/@leonardoberlatto?',
+        delay: 1000,
+      },
     }),
   },
   help: {
@@ -85,7 +93,7 @@ export const COMMANDS: Record<string, Command> = {
   },
 };
 
-export function executeCommand(input: string): OutputEntry {
+export async function executeCommand(input: string): Promise<OutputEntry> {
   const commandName = input.trim().toLowerCase();
 
   if (COMMANDS[commandName]) {

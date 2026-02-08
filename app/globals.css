@@ -50,6 +50,17 @@ body {
   font-size: 16px; /* Prevents iOS auto-zoom on focus */
 }
 
+.block-cursor {
+  background: var(--dracula-green);
+  color: var(--dracula-background);
+  animation: blink-block 1s step-end infinite;
+}
+
+@keyframes blink-block {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 .terminal-input-line {
   padding: 8px 12px 12px;
 }

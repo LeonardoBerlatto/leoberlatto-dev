@@ -1,7 +1,7 @@
-{{pink:Hey there!}} I'm Leonardo Berlatto, a {{yellow:full-stack engineer}} passionate about creating elegant solutions to complex problems.
+{{pink:Hey there!}} I'm Leonardo Berlatto, a {{yellow:full-stack/product engineer}} passionate about creating elegant solutions to complex problems.
 
-With {{cyan:5+ years}} of experience, I specialize in building {{green:scalable web applications}} that users love. I'm obsessed with {{orange:clean code}}, {{purple:intuitive design}}, and {{yellow:performance optimization}}.
+With {{cyan:6+ years}} of experience, I specialize in building scalable web applications that users love. I'm obsessed with smooth user experiences, erasing bugs and optimizing performance.
 
-Currently exploring {{cyan:AI-powered applications}} and {{green:modern web architectures}}. When I'm not coding, you'll find me {{pink:contributing to open source}} or {{orange:writing about web development}}.
+When I'm not coding, you'll find me reading books, watching movies, or outside in the nature 🌲.
 
 {{green:Let's build something amazing together!}}
