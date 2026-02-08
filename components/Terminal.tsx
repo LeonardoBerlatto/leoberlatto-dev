@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import * as Tone from 'tone';
 import { executeCommand, COMMANDS } from '@/lib/commands';
 import { parseContent } from '@/lib/parse-content';
 import { CONTENT } from '@/lib/content';
@@ -21,9 +22,35 @@ export default function Terminal() {
   const [historyIndex, setHistoryIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
+  const [toneStarted, setToneStarted] = useState(false);
   const animatingTextRef = useRef('');
   const inputRef = useRef<HTMLInputElement>(null);
   const outputRef = useRef<HTMLDivElement>(null);
+
+  const initTone = useCallback(async () => {
+    if (toneStarted) return;
+    await Tone.start();
+    setToneStarted(true);
+  }, [toneStarted]);
+
+  const playChime = useCallback(async () => {
+    if (!toneStarted) return;
+    const synth = new Tone.Synth({
+      oscillator: { type: 'sine' },
+      envelope: { attack: 0.005, decay: 0.15, sustain: 0, release: 0.1 },
+      volume: -18,
+    }).toDestination();
+    const now = Tone.now();
+    synth.triggerAttackRelease('C5', '16n', now);
+    setTimeout(() => {
+      const synth2 = new Tone.Synth({
+        oscillator: { type: 'sine' },
+        envelope: { attack: 0.005, decay: 0.15, sustain: 0, release: 0.1 },
+        volume: -18,
+      }).toDestination();
+      synth2.triggerAttackRelease('E5', '16n');
+    }, 100);
+  }, [toneStarted]);
 
   useEffect(() => {
     setHistory([
@@ -60,13 +87,15 @@ export default function Terminal() {
           ...prev,
           { type: 'output', content: fullText },
         ]);
+        playChime();
       }
     }, TYPING_SPEED_MS);
 
     return () => clearInterval(interval);
-  }, [isAnimating]);
+  }, [isAnimating, playChime]);
 
   const handleSubmit = useCallback(() => {
+    initTone();
     const trimmed = input.trim();
     if (!trimmed || isAnimating) return;
 
@@ -84,6 +113,7 @@ export default function Terminal() {
       setHistory([]);
     } else if (shouldBeInstant) {
       setHistory([...newHistory, { type: 'output', content: result.content }]);
+      playChime();
     } else {
       setHistory(newHistory);
       animatingTextRef.current = result.content;
@@ -96,7 +126,7 @@ export default function Terminal() {
     setHistoryIndex(newCommandHistory.length);
 
     setTimeout(() => inputRef.current?.focus(), 0);
-  }, [input, history, commandHistory, isAnimating]);
+  }, [input, history, commandHistory, isAnimating, initTone, playChime]);
 
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
      if (e.key === 'Enter') {
@@ -138,6 +168,7 @@ export default function Terminal() {
    };
 
   const handleContainerClick = () => {
+    initTone();
     inputRef.current?.focus();
   };
 
