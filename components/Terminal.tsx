@@ -5,6 +5,10 @@ import { executeCommand } from '@/lib/commands';
 import { parseContent } from '@/lib/parse-content';
 import { CONTENT } from '@/lib/content';
 
+const TYPING_SPEED_MS = 20;
+
+const INSTANT_COMMANDS = new Set(['banner', 'clear', 'history', 'help']);
+
 type HistoryEntry = {
   type: 'command' | 'output';
   content: string;
@@ -14,6 +18,9 @@ export default function Terminal() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [input, setInput] = useState('');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [displayedText, setDisplayedText] = useState('');
+  const animatingTextRef = useRef('');
   const inputRef = useRef<HTMLInputElement>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
@@ -28,15 +35,39 @@ export default function Terminal() {
     if (outputRef.current) {
       outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
-  }, [history]);
+  }, [history, displayedText]);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
+  useEffect(() => {
+    if (!isAnimating) return;
+
+    const fullText = animatingTextRef.current;
+    let index = 0;
+
+    const interval = setInterval(() => {
+      index++;
+      if (index <= fullText.length) {
+        setDisplayedText(fullText.slice(0, index));
+      } else {
+        clearInterval(interval);
+        setIsAnimating(false);
+        setDisplayedText('');
+        setHistory((prev) => [
+          ...prev,
+          { type: 'output', content: fullText },
+        ]);
+      }
+    }, TYPING_SPEED_MS);
+
+    return () => clearInterval(interval);
+  }, [isAnimating]);
+
   const handleSubmit = useCallback(() => {
     const trimmed = input.trim();
-    if (!trimmed) return;
+    if (!trimmed || isAnimating) return;
 
     const newHistory: HistoryEntry[] = [
       ...history,
@@ -45,18 +76,25 @@ export default function Terminal() {
 
     const newCommandHistory = [...commandHistory, trimmed];
     const result = executeCommand(trimmed, newCommandHistory);
+    const commandName = trimmed.toLowerCase();
+    const shouldBeInstant = result.instant || INSTANT_COMMANDS.has(commandName);
 
     if (result.clear) {
       setHistory([]);
-    } else {
+    } else if (shouldBeInstant) {
       setHistory([...newHistory, { type: 'output', content: result.content }]);
+    } else {
+      setHistory(newHistory);
+      animatingTextRef.current = result.content;
+      setDisplayedText('');
+      setIsAnimating(true);
     }
 
     setCommandHistory(newCommandHistory);
     setInput('');
 
     setTimeout(() => inputRef.current?.focus(), 0);
-  }, [input, history, commandHistory]);
+  }, [input, history, commandHistory, isAnimating]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -105,6 +143,13 @@ export default function Terminal() {
             )}
           </div>
         ))}
+        {isAnimating && displayedText && (
+          <div style={{ marginBottom: '4px' }}>
+            <div className="output" style={{ whiteSpace: 'pre-wrap' }}>
+              {parseContent(displayedText)}
+            </div>
+          </div>
+        )}
       </div>
 
       <div
@@ -124,6 +169,7 @@ export default function Terminal() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
+          disabled={isAnimating}
           autoFocus
           spellCheck={false}
           autoComplete="off"
@@ -138,6 +184,7 @@ export default function Terminal() {
             fontSize: 'inherit',
             caretColor: 'var(--dracula-green)',
             padding: 0,
+            opacity: isAnimating ? 0.5 : 1,
           }}
         />
       </div>
