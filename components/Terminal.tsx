@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { executeCommand } from '@/lib/commands';
+import { executeCommand, COMMANDS } from '@/lib/commands';
 import { parseContent } from '@/lib/parse-content';
 import { CONTENT } from '@/lib/content';
 
@@ -98,29 +98,44 @@ export default function Terminal() {
     setTimeout(() => inputRef.current?.focus(), 0);
   }, [input, history, commandHistory, isAnimating]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSubmit();
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (historyIndex > 0) {
-        const newIndex = historyIndex - 1;
-        setHistoryIndex(newIndex);
-        setInput(commandHistory[newIndex]);
-      }
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (historyIndex < commandHistory.length - 1) {
-        const newIndex = historyIndex + 1;
-        setHistoryIndex(newIndex);
-        setInput(commandHistory[newIndex]);
-      } else {
-        setHistoryIndex(commandHistory.length);
-        setInput('');
-      }
-    }
-  };
+   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+     if (e.key === 'Enter') {
+       e.preventDefault();
+       handleSubmit();
+     } else if (e.key === 'ArrowUp') {
+       e.preventDefault();
+       if (historyIndex > 0) {
+         const newIndex = historyIndex - 1;
+         setHistoryIndex(newIndex);
+         setInput(commandHistory[newIndex]);
+       }
+     } else if (e.key === 'ArrowDown') {
+       e.preventDefault();
+       if (historyIndex < commandHistory.length - 1) {
+         const newIndex = historyIndex + 1;
+         setHistoryIndex(newIndex);
+         setInput(commandHistory[newIndex]);
+       } else {
+         setHistoryIndex(commandHistory.length);
+         setInput('');
+       }
+     } else if (e.key === 'Tab') {
+       e.preventDefault();
+       const commandNames = Object.keys(COMMANDS);
+       const matches = commandNames.filter(cmd =>
+         cmd.toLowerCase().startsWith(input.toLowerCase().trim())
+       );
+
+       if (matches.length === 1) {
+         setInput(matches[0]);
+       } else if (matches.length > 1) {
+         setHistory([...history, {
+           type: 'output',
+           content: matches.join('  ')
+         }]);
+       }
+     }
+   };
 
   const handleContainerClick = () => {
     inputRef.current?.focus();
