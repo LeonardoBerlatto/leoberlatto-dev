@@ -47,7 +47,7 @@ Currently exploring {{cyan:AI-powered applications}} and {{green:modern web arch
 {{pink:E-commerce Platform}} - {{cyan:[github.com/leoberlatto/shop](https://github.com/leoberlatto/shop)}}
   Full-stack {{yellow:e-commerce}} solution with {{green:payment integration}}, {{cyan:inventory management}}, and {{pink:admin dashboard}}. Built with {{orange:Next.js}} and {{purple:PostgreSQL}}.`,
 
-    resume: `{{yellow:Resume: 📄}} {{cyan:[resume_w_phone.pdf](https://drive.google.com/file/d/1ShJlPGo4FJGdbWE0bSKoY8qywgmczb9P/view?usp=sharing)}} {{yellow:— or type gui for the desktop.}}
+    resume: `{{yellow:Resume: 📄}} {{cyan:[resume.pdf](https://drive.google.com/file/d/1ShJlPGo4FJGdbWE0bSKoY8qywgmczb9P/view?usp=sharing)}} {{yellow:— or type gui for the desktop.}}
 
 {{green:Check my projects and stack too!}}`,
 

@@ -2,9 +2,10 @@ import React from 'react';
 
 type Segment = {
   type: 'color' | 'bold' | 'link' | 'code' | 'text';
-  content: string;
+  content?: string;
   color?: string;
   url?: string;
+  nested?: Segment[];
 };
 
 /**
@@ -37,10 +38,11 @@ function parseLine(line: string): Segment[] {
   while (remaining.length > 0) {
     const colorMatch = remaining.match(/^\{\{(\w+):([^}]+)\}\}/);
     if (colorMatch) {
+      const nestedSegments = parseLine(colorMatch[2]);
       segments.push({
         type: 'color',
-        content: colorMatch[2],
         color: colorMatch[1],
+        nested: nestedSegments,
       });
       remaining = remaining.slice(colorMatch[0].length);
       continue;
@@ -105,7 +107,7 @@ function segmentToReact(segment: Segment, key: string): React.ReactNode {
           key={key}
           style={{ color: `var(--dracula-${segment.color})` }}
         >
-          {segment.content}
+          {segment.nested?.map((nested, i) => segmentToReact(nested, `${key}-${i}`))}
         </span>
       );
 
@@ -116,18 +118,18 @@ function segmentToReact(segment: Segment, key: string): React.ReactNode {
         </span>
       );
 
-    case 'link':
-      return (
-        <a
-          key={key}
-          href={segment.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#ff79c6' }}
-        >
-          {segment.content}
-        </a>
-      );
+     case 'link':
+       return (
+         <a
+           key={key}
+           href={segment.url}
+           target="_blank"
+           rel="noopener noreferrer"
+           style={{ color: 'inherit', textDecoration: 'underline' }}
+         >
+           {segment.content}
+         </a>
+       );
 
     case 'code':
       return (
