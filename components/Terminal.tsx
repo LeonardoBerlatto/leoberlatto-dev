@@ -18,6 +18,7 @@ export default function Terminal() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [input, setInput] = useState('');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayedText, setDisplayedText] = useState('');
   const animatingTextRef = useRef('');
@@ -92,6 +93,7 @@ export default function Terminal() {
 
     setCommandHistory(newCommandHistory);
     setInput('');
+    setHistoryIndex(newCommandHistory.length);
 
     setTimeout(() => inputRef.current?.focus(), 0);
   }, [input, history, commandHistory, isAnimating]);
@@ -100,6 +102,23 @@ export default function Terminal() {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleSubmit();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        const newIndex = historyIndex - 1;
+        setHistoryIndex(newIndex);
+        setInput(commandHistory[newIndex]);
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex < commandHistory.length - 1) {
+        const newIndex = historyIndex + 1;
+        setHistoryIndex(newIndex);
+        setInput(commandHistory[newIndex]);
+      } else {
+        setHistoryIndex(commandHistory.length);
+        setInput('');
+      }
     }
   };
 
