@@ -1,10 +1,12 @@
-import aboutMd from '@/content/about.md';
-import blogMd from '@/content/blog.md';
-import projectsMd from '@/content/projects.md';
-import socialMd from '@/content/social.md';
-import stackMd from '@/content/stack.md';
+export type Content = typeof STATIC_CONTENT & {
+  about: string;
+  stack: string;
+  projects: string;
+  social: string;
+  blog: string;
+};
 
-export const CONTENT = {
+const STATIC_CONTENT = {
   banner: `{{cyan:  _    ___ ___  _  _   _   ___ ___   ___}}
 {{cyan: | |  | __/ _ \\| \\| | /_\\ | _ \\   \\ / _ \\}}
 {{cyan: | |__| _| (_) | .\` |/ _ \\|   / |) | (_) |}}
@@ -15,19 +17,9 @@ export const CONTENT = {
 {{pink: |___/|___|_|_\\____/_/ \\_\\_|   |_| \\___/}}
 {{green:software engineer}} {{yellow:·}} {{yellow:6+ years of experience}}`,
 
-  about: aboutMd.trim(),
-
-  stack: stackMd.trim(),
-
-    resume: `{{yellow:Resume: 📄}} {{cyan:[resume.pdf](https://drive.google.com/file/d/1ShJlPGo4FJGdbWE0bSKoY8qywgmczb9P/view?usp=sharing)}} {{yellow:— or type gui for the desktop.}}
+  resume: `{{yellow:Resume: 📄}} {{cyan:[resume.pdf](https://drive.google.com/file/d/1ShJlPGo4FJGdbWE0bSKoY8qywgmczb9P/view?usp=sharing)}} {{yellow:— or type gui for the desktop.}}
 
 {{green:Check my projects and stack too!}}`,
-
-  projects: projectsMd.trim(),
-
-  social: socialMd.trim(),
-
-  blog: blogMd.trim(),
 
   julia: `{{pink:     _ _   _ _     _    _}}
 {{pink:    | | | | | |   | |  / \\}}
@@ -52,3 +44,20 @@ export const CONTENT = {
 {{pink:  | | | _|  / _ \\| |\\/| | (_) |}}
 {{pink:  |_| |___|/_/ \\_\\_|  |_|\\___/}}`,
 };
+
+export function buildContent(files: {
+  about: string;
+  stack: string;
+  projects: string;
+  social: string;
+  blog: string;
+}): Content {
+  return {
+    ...STATIC_CONTENT,
+    about: files.about.trim(),
+    stack: files.stack.trim(),
+    projects: files.projects.trim(),
+    social: files.social.trim(),
+    blog: files.blog.trim(),
+  };
+}

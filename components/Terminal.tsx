@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import * as Tone from 'tone';
-import { executeCommand, COMMANDS } from '@/lib/commands';
+import { executeCommand, buildCommands, Command } from '@/lib/commands';
 import { parseContent } from '@/lib/parse-content';
-import { CONTENT } from '@/lib/content';
+import { Content } from '@/lib/content';
 
 const TYPING_SPEED_MS = 12;
 
@@ -15,7 +15,11 @@ type HistoryEntry = {
   content: string;
 };
 
-export default function Terminal() {
+type TerminalProps = {
+  content: Content;
+};
+
+export default function Terminal({ content }: TerminalProps) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [input, setInput] = useState('');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
@@ -27,6 +31,8 @@ export default function Terminal() {
   const animatingTextRef = useRef('');
   const inputRef = useRef<HTMLInputElement>(null);
   const outputRef = useRef<HTMLDivElement>(null);
+
+  const commands = useMemo(() => buildCommands(content), [content]);
 
   const initTone = useCallback(async () => {
     if (toneStarted) return;
@@ -55,7 +61,7 @@ export default function Terminal() {
 
   useEffect(() => {
     setHistory([
-      { type: 'output', content: CONTENT.banner },
+      { type: 'output', content: content.banner },
       { type: 'output', content: 'Type {{green:help}} to see available commands.' },
     ]);
   }, []);
@@ -112,7 +118,7 @@ export default function Terminal() {
     });
     setInput('');
 
-    const result = await executeCommand(trimmed);
+    const result = await executeCommand(trimmed, commands);
     const commandName = trimmed.toLowerCase();
     const shouldBeInstant = result.instant || INSTANT_COMMANDS.has(commandName);
 
@@ -133,7 +139,7 @@ export default function Terminal() {
     }
 
     setTimeout(() => inputRef.current?.focus(), 0);
-  }, [input, isAnimating, initTone, playChime]);
+  }, [input, isAnimating, initTone, playChime, commands]);
 
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
      if (e.key === 'Enter') {
@@ -158,7 +164,7 @@ export default function Terminal() {
        }
      } else if (e.key === 'Tab') {
        e.preventDefault();
-       const commandNames = Object.keys(COMMANDS);
+       const commandNames = Object.keys(commands);
        const matches = commandNames.filter(cmd =>
          cmd.toLowerCase().startsWith(input.toLowerCase().trim())
        );
@@ -185,10 +191,10 @@ export default function Terminal() {
   };
 
   const inputColor = useMemo(() =>
-    input.trim() && COMMANDS[input.trim().toLowerCase()]
+    input.trim() && commands[input.trim().toLowerCase()]
       ? 'var(--dracula-green)'
       : 'var(--dracula-foreground)',
-    [input]
+    [input, commands]
   );
 
   return (
@@ -214,11 +220,11 @@ export default function Terminal() {
       >
         {history.map((entry, index) => (
           <div key={index} style={{ marginBottom: '4px' }}>
-            {entry.type === 'command' ? (
+                {entry.type === 'command' ? (
               <div className="command-line" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <Prompt />
                 <span style={{
-                  color: COMMANDS[entry.content.trim().toLowerCase()]
+                  color: commands[entry.content.trim().toLowerCase()]
                     ? 'var(--dracula-green)'
                     : undefined
                 }}>{entry.content}</span>
