@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+module.exports = {
   turbopack: {
     rules: {
       '*.md': {
@@ -10,5 +9,3 @@ const nextConfig: NextConfig = {
     },
   },
 };
-
-export default nextConfig;
