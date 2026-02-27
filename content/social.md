@@ -1,9 +1,9 @@
-{{yellow:Connect with me}}
+{{yellow:Connect with me on:}}
 
-{{green:GitHub}} - {{cyan:[github.com/leoberlatto](https://github.com/leoberlatto)}}
+{{green:GitHub}} - {{cyan:[github.com/leonardoberlatto](https://github.com/leonardoberlatto)}}
   {{yellow:50+ repositories}}, always creating new repositories to learn more.
 
-{{green:LinkedIn}} - {{cyan:[linkedin.com/in/leoberlatto](https://linkedin.com/in/leoberlatto)}}
+{{green:LinkedIn}} - {{cyan:[linkedin.com/in/leonardo-berlatto](https://www.linkedin.com/in/leonardo-berlatto/)}}
 
 {{green:Twitter}} - {{cyan:[@leoberlatto](https://twitter.com/leoberlatto)}}
   {{yellow:Sharing}} software engineering tips and industry insights
