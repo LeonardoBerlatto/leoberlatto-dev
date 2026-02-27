@@ -45,7 +45,17 @@ export default function Terminal({ content }: TerminalProps) {
 
   const shortcuts: KeyboardShortcut[] = useMemo(() => [
     { key: 'l', ctrl: true, handler: () => setHistory([]) },
-  ], []);
+    { key: 'u', ctrl: true, handler: () => { setInput(''); setCursorPos(0); } },
+    { key: 'a', ctrl: true, handler: () => {
+      inputRef.current?.setSelectionRange(0, 0);
+      setCursorPos(0);
+    }},
+    { key: 'e', ctrl: true, handler: () => {
+      const len = input.length;
+      inputRef.current?.setSelectionRange(len, len);
+      setCursorPos(len);
+    }},
+  ], [input]);
 
   const initTone = useCallback(async () => {
     if (toneStarted) return;
@@ -92,6 +102,19 @@ export default function Terminal({ content }: TerminalProps) {
     if (!isAnimating) {
       inputRef.current?.focus();
     }
+  }, [isAnimating]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isAnimating) {
+        e.preventDefault();
+        setIsAnimating(false);
+        setDisplayedText('');
+        setHistory(prev => [...prev, { type: 'output', content: animatingTextRef.current }]);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
   }, [isAnimating]);
 
   useEffect(() => {
