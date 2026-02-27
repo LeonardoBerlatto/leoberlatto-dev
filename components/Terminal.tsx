@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { executeCommand, buildCommands, Command } from '@/lib/commands';
 import { parseContent } from '@/lib/parse-content';
 import { Content } from '@/lib/content';
+import { KeyboardShortcut, matchShortcut } from '@/lib/shortcuts';
 
 const TYPING_SPEED_MS = 12;
 
@@ -41,6 +42,10 @@ export default function Terminal({ content }: TerminalProps) {
   const outputRef = useRef<HTMLDivElement>(null);
 
   const commands = useMemo(() => buildCommands(content), [content]);
+
+  const shortcuts: KeyboardShortcut[] = useMemo(() => [
+    { key: 'l', ctrl: true, handler: () => setHistory([]) },
+  ], []);
 
   const initTone = useCallback(async () => {
     if (toneStarted) return;
@@ -153,6 +158,13 @@ export default function Terminal({ content }: TerminalProps) {
   }, [input, isAnimating, initTone, playChime, commands]);
 
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+     const matched = matchShortcut(e, shortcuts);
+     if (matched) {
+       e.preventDefault();
+       matched.handler();
+       return;
+     }
+
      if (e.key === 'Enter') {
        e.preventDefault();
        handleSubmit();
