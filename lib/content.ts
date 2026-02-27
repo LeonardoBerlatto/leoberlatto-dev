@@ -7,14 +7,14 @@ export type Content = typeof STATIC_CONTENT & {
 };
 
 const STATIC_CONTENT = {
-  banner: `{{cyan:  _    ___ ___  _  _   _   ___ ___   ___}}
-{{cyan: | |  | __/ _ \\| \\| | /_\\ | _ \\   \\ / _ \\}}
-{{cyan: | |__| _| (_) | .\` |/ _ \\|   / |) | (_) |}}
-{{cyan: |____|___\\___/|_|\\_/_/ \\_\\_|_\\___/ \\___/}}
-{{pink:  ___  ___ ___ _      _ _____ _____ ___}}
-{{pink: | _ )| __| _ \\ |    /_\\_   _|_   _/ _ \\}}
-{{pink: | _ \\| _||   / |__ / _ \\| |   | || (_) |}}
-{{pink: |___/|___|_|_\\____/_/ \\_\\_|   |_| \\___/}}
+  banner: `{{cyan: _    ___ ___  _  _   _   ___ ___   ___}}
+{{cyan:| |  | __/ _ \\| \\| | /_\\ | _ \\   \\ / _ \\}}
+{{cyan:| |__| _| (_) | .\` |/ _ \\|   / |) | (_) |}}
+{{cyan:|____|___\\___/|_|\\_/_/ \\_\\_|_\\___/ \\___/}}
+{{pink: ___  ___ ___ _      _ _____ _____ ___}}
+{{pink:| _ )| __| _ \\ |    /_\\_   _|_   _/ _ \\}}
+{{pink:| _ \\| _||   / |__ / _ \\| |   | || (_) |}}
+{{pink:|___/|___|_|_\\____/_/ \\_\\_|   |_| \\___/}}
 {{green:software engineer}} {{yellow:·}} {{yellow:6+ years of experience}}`,
 
   resume: `{{yellow:Resume: 📄}} {{cyan:[resume.pdf](https://drive.google.com/file/d/1ShJlPGo4FJGdbWE0bSKoY8qywgmczb9P/view?usp=sharing)}} {{yellow:— or type gui for the desktop.}}

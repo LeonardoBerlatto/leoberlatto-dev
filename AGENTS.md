@@ -18,13 +18,13 @@ See `docs/project-structure.md`.
 ## Safe Change Playbooks
 
 ### Add or modify a terminal command
-See `docs/playbook-commands.md`.
+See `docs/commands.md`.
 
 ### Parsing/rendering behavior
-See `docs/playbook-parser.md`.
+See `docs/parser.md`.
 
 ### Terminal interaction + shortcuts
-See `docs/playbook-terminal.md`.
+See `docs/terminal.md`.
 
 ## Testing
 See `docs/testing-validation.md`.
