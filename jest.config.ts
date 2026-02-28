@@ -11,6 +11,7 @@ const config: Config = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
   },
+  testPathIgnorePatterns: ["/node_modules/", "/__fixtures__/"],
 };
 
 export default createJestConfig(config);
