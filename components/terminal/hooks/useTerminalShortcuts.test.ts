@@ -22,6 +22,22 @@ function createMockInputRef() {
   } as unknown as RefObject<HTMLInputElement>;
 }
 
+function createMockHistorySearch(overrides: Record<string, unknown> = {}) {
+  return {
+    isSearchMode: false,
+    searchQuery: '',
+    searchResults: [] as string[],
+    searchIndex: 0,
+    openSearch: jest.fn(),
+    closeSearch: jest.fn(),
+    updateSearchQuery: jest.fn(),
+    selectSearchUp: jest.fn(),
+    selectSearchDown: jest.fn(),
+    acceptSearch: jest.fn().mockReturnValue(null),
+    ...overrides,
+  };
+}
+
 function setup(overrides: Record<string, unknown> = {}) {
   const commands = {
     help: { description: '', handler: jest.fn() },
@@ -42,6 +58,7 @@ function setup(overrides: Record<string, unknown> = {}) {
     handleSubmit: jest.fn().mockResolvedValue(undefined),
     navigateUp: jest.fn(),
     navigateDown: jest.fn(),
+    historySearch: createMockHistorySearch(),
     ...overrides,
   };
 
@@ -227,6 +244,139 @@ describe('useTerminalShortcuts', () => {
       expect(event.preventDefault).not.toHaveBeenCalled();
       expect(params.setInput).not.toHaveBeenCalled();
       expect(params.handleSubmit).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Ctrl+R', () => {
+    it('opens search mode', () => {
+      const historySearch = createMockHistorySearch();
+      const { result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('r', { ctrlKey: true }));
+      });
+
+      expect(historySearch.openSearch).toHaveBeenCalled();
+    });
+  });
+
+  describe('search mode key handling', () => {
+    it('Escape closes search mode', () => {
+      const historySearch = createMockHistorySearch({ isSearchMode: true });
+      const { result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('Escape'));
+      });
+
+      expect(historySearch.closeSearch).toHaveBeenCalled();
+    });
+
+    it('Enter accepts selected command, closes search, and sets input', () => {
+      const historySearch = createMockHistorySearch({
+        isSearchMode: true,
+        acceptSearch: jest.fn().mockReturnValue('help'),
+      });
+      const { params, result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('Enter'));
+      });
+
+      expect(historySearch.acceptSearch).toHaveBeenCalled();
+      expect(historySearch.closeSearch).toHaveBeenCalled();
+      expect(params.setInput).toHaveBeenCalledWith('help');
+    });
+
+    it('Enter with no match closes search without setting input', () => {
+      const historySearch = createMockHistorySearch({
+        isSearchMode: true,
+        acceptSearch: jest.fn().mockReturnValue(null),
+      });
+      const { params, result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('Enter'));
+      });
+
+      expect(historySearch.closeSearch).toHaveBeenCalled();
+      expect(params.setInput).not.toHaveBeenCalled();
+    });
+
+    it('ArrowUp moves selection up', () => {
+      const historySearch = createMockHistorySearch({ isSearchMode: true });
+      const { result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('ArrowUp'));
+      });
+
+      expect(historySearch.selectSearchUp).toHaveBeenCalled();
+    });
+
+    it('ArrowDown moves selection down', () => {
+      const historySearch = createMockHistorySearch({ isSearchMode: true });
+      const { result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('ArrowDown'));
+      });
+
+      expect(historySearch.selectSearchDown).toHaveBeenCalled();
+    });
+
+    it('Backspace trims last char from query', () => {
+      const historySearch = createMockHistorySearch({
+        isSearchMode: true,
+        searchQuery: 'hel',
+      });
+      const { result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('Backspace'));
+      });
+
+      expect(historySearch.updateSearchQuery).toHaveBeenCalledWith('he');
+    });
+
+    it('printable key appends to query', () => {
+      const historySearch = createMockHistorySearch({
+        isSearchMode: true,
+        searchQuery: 'hel',
+      });
+      const { result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('p'));
+      });
+
+      expect(historySearch.updateSearchQuery).toHaveBeenCalledWith('help');
+    });
+
+    it('ctrl+key does not append to query while in search mode', () => {
+      const historySearch = createMockHistorySearch({
+        isSearchMode: true,
+        searchQuery: '',
+      });
+      const { result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('c', { ctrlKey: true }));
+      });
+
+      expect(historySearch.updateSearchQuery).not.toHaveBeenCalled();
+    });
+
+    it('search mode intercepts all keys before normal shortcut logic', () => {
+      const historySearch = createMockHistorySearch({ isSearchMode: true });
+      const { params, result } = setup({ historySearch });
+
+      act(() => {
+        result.result.current.handleKeyDown(createKeyEvent('l', { ctrlKey: true }));
+      });
+
+      // Ctrl+L clears history in normal mode; in search mode it should be swallowed
+      expect(params.setHistory).not.toHaveBeenCalled();
     });
   });
 });

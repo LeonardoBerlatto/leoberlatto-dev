@@ -12,6 +12,7 @@ import { useCommandExecution } from './hooks/useCommandExecution';
 import { useTerminalShortcuts } from './hooks/useTerminalShortcuts';
 import TerminalOutput from './TerminalOutput';
 import TerminalInput from './TerminalInput';
+import HistorySearchOverlay from './HistorySearchOverlay';
 
 type TerminalProps = { content: Content };
 
@@ -37,7 +38,7 @@ export default function Terminal({ content }: TerminalProps) {
     onAnimationComplete, playChime, inputRef,
   );
 
-  const { addToHistory: addToCommandHistory, navigateUp, navigateDown } = useCommandHistory();
+  const { addToHistory: addToCommandHistory, navigateUp, navigateDown, historySearch } = useCommandHistory();
 
   useAutoScroll(outputRef, history, displayedText);
 
@@ -48,7 +49,7 @@ export default function Terminal({ content }: TerminalProps) {
 
   const { handleKeyDown, updateCursorPos } = useTerminalShortcuts({
     input, commands, inputRef, history,
-    setInput, setHistory, setCursorPos, handleSubmit, navigateUp, navigateDown,
+    setInput, setHistory, setCursorPos, handleSubmit, navigateUp, navigateDown, historySearch,
   });
 
   const handleContainerClick = () => {
@@ -69,6 +70,13 @@ export default function Terminal({ content }: TerminalProps) {
       <TerminalOutput history={history} isAnimating={isAnimating}
         displayedText={displayedText} showSkipHint={showSkipHint}
         commands={commands} outputRef={outputRef} />
+      {historySearch.isSearchMode && (
+        <HistorySearchOverlay
+          query={historySearch.searchQuery}
+          results={historySearch.searchResults}
+          selectedIndex={historySearch.searchIndex}
+        />
+      )}
       <TerminalInput input={input} inputColor={inputColor} cursorPos={cursorPos}
         isAnimating={isAnimating} inputRef={inputRef}
         onInputChange={(e) => { setInput(e.target.value); setTimeout(updateCursorPos, 0); }}
