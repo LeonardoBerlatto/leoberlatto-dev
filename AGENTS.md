@@ -13,21 +13,14 @@ This document defines how coding agents should work here: fast, safe, and consis
 - Output parser: `lib/parse-content.tsx` renders custom inline syntax (colors, links, bold, code).
 
 ## Project Structure
-See `docs/project-structure.md`.
+See `.cursor/rules/project-structure.mdc` (always applied).
 
 ## Safe Change Playbooks
-
-### Add or modify a terminal command
-See `docs/commands.md`.
-
-### Parsing/rendering behavior
-See `docs/parser.md`.
-
-### Terminal interaction + shortcuts
-See `docs/terminal.md`.
-
-## Testing
-See `docs/testing-validation.md`.
+Domain-specific playbooks in `.cursor/rules/` (auto-applied when matching files are in context):
+- Commands: `commands.mdc` → `lib/commands.ts`
+- Parsing: `parser.mdc` → `lib/parse-content.tsx`
+- Terminal: `terminal.mdc` → `components/terminal/**`
+- Testing: `testing.mdc` → test files, app, components
 
 ## Guardrails
 - Do not remove existing command behavior unless requested.

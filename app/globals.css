@@ -65,6 +65,15 @@ body {
   padding: 8px 12px 12px;
 }
 
+.skip-hint {
+  animation: fade-in 0.4s ease-in;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (min-width: 768px) {
   .terminal-output {
     padding: 16px;

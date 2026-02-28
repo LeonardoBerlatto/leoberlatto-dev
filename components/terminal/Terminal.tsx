@@ -33,7 +33,7 @@ export default function Terminal({ content }: TerminalProps) {
     setHistory(prev => [...prev, { type: 'output', content: fullText }]);
   }, []);
 
-  const { isAnimating, displayedText, startAnimation } = useTypingAnimation(
+  const { isAnimating, displayedText, showSkipHint, startAnimation } = useTypingAnimation(
     onAnimationComplete, playChime, inputRef,
   );
 
@@ -67,7 +67,8 @@ export default function Terminal({ content }: TerminalProps) {
     <div className="terminal-container" onClick={handleContainerClick}
       style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', overflow: 'hidden' }}>
       <TerminalOutput history={history} isAnimating={isAnimating}
-        displayedText={displayedText} commands={commands} outputRef={outputRef} />
+        displayedText={displayedText} showSkipHint={showSkipHint}
+        commands={commands} outputRef={outputRef} />
       <TerminalInput input={input} inputColor={inputColor} cursorPos={cursorPos}
         isAnimating={isAnimating} inputRef={inputRef}
         onInputChange={(e) => { setInput(e.target.value); setTimeout(updateCursorPos, 0); }}
